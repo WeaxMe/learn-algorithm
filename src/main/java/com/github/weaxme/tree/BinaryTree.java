@@ -16,7 +16,14 @@ public class BinaryTree {
         root.setLeft(new Node(2, new Node(4), new Node(6)));
         root.setRight(new Node(3, null, new Node(7, new Node(9), new Node(10))));
         log.info("root: {}", root);
-        log.info("data: {}", inorderTraversal(root));
+        log.info("inorder: {}", inorderTraversal(root));
+        log.info("preorder: {}", preorderTraversal(root));
+
+        Node sample = new Node(1);
+        sample.setLeft(new Node(2, new Node(4), new Node(5)));
+        sample.setRight(new Node(3));
+        log.info("sample inorder: {}", inorderTraversal(sample));
+        log.info("sample preorder: {}", preorderTraversal(sample));
     }
 
     private String inorderTraversal(Node node) {
@@ -27,6 +34,16 @@ public class BinaryTree {
             return node.data + " " + inorderTraversal(node.right);
         }
         return inorderTraversal(node.left) + " " + node.data + " " + inorderTraversal(node.right);
+    }
+
+    private String preorderTraversal(Node node) {
+        if (node.isLeaf()) {
+            return node.data + "";
+        }
+        if (node.left == null) {
+            return node.data + " " + preorderTraversal(node.right);
+        }
+        return node.data + " " + preorderTraversal(node.left) + " " + preorderTraversal(node.right);
     }
 
     private Node fillTree(Node root, int layers) {
