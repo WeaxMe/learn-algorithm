@@ -2,10 +2,8 @@ package com.github.weaxme.graph;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -28,10 +26,9 @@ public class Graph {
         addEdge(v0, new Vertex(4));
         addEdge(v0, new Vertex(5));
         log.info("v0 hashcode: {}", v0.hashCode());
-        log.info("Graph: {}", breadthFirst(v1));
+        log.info("Graph breadthFirst: {}", breadthFirst(v1));
+        log.info("Graph depthFirst: {}", depthFirst(v0, new HashSet<>()));
     }
-
-
     private List<Integer> breadthFirst(Vertex current) {
         List<Integer> result = new LinkedList<>();
 
@@ -53,7 +50,23 @@ public class Graph {
         }
 
         return result;
-   }
+    }
+
+    private List<Integer> depthFirst(Vertex vertex, Set<Vertex> visited) {
+        List<Integer> result = new LinkedList<>();
+
+        result.add(vertex.getData());
+        visited.add(vertex);
+
+        vertex.getEdges().stream()
+                .flatMap(e -> Stream.of(e.getIn(), e.getOut()))
+                .filter(v -> !visited.contains(v))
+                .forEach(v -> {
+                    result.addAll(depthFirst(v, visited));
+                });
+
+        return result;
+    }
 
     private Edge addEdge(Vertex out, Vertex in) {
         if (out.isConnected(in, true)) {
